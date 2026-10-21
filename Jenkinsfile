@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
 
@@ -8,10 +9,10 @@ pipeline {
             }
         }
 
-        stage('Check HTML File') {
+        stage('Test HTML File') {
             steps {
                 sh 'test -f index.html'
-                echo 'PASS: HTML file exists'
+                echo 'TC01 PASSED: HTML file exists'
             }
         }
 
@@ -24,17 +25,38 @@ pipeline {
                     grep -q 'id="contact"' index.html
                     grep -q 'type="submit"' index.html
                 '''
-                echo 'PASS: All required fields exist'
+                echo 'TC02-TC06 PASSED: Form fields verified'
+            }
+        }
+
+        stage('Test Form Validation') {
+            steps {
+                sh '''
+                    grep -q 'required' index.html
+                    grep -q 'pattern="[0-9]{10}"' index.html
+                    grep -q 'maxlength="10"' index.html
+                '''
+                echo 'TC07-TC09 PASSED: Validation attributes verified'
+            }
+        }
+
+        stage('Test Success Message') {
+            steps {
+                sh '''
+                    grep -q 'id="message"' index.html
+                    grep -q 'Registration submitted successfully!' index.html
+                '''
+                echo 'TC10 PASSED: Success message verified'
             }
         }
     }
 
     post {
         success {
-            echo 'All tests passed!'
+            echo 'ALL AUTOMATED TESTS PASSED!'
         }
         failure {
-            echo 'Tests failed. Check the console output.'
+            echo 'TEST FAILED: Check Console Output'
         }
     }
 }
