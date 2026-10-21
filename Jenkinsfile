@@ -33,8 +33,8 @@ pipeline {
             steps {
                 sh '''
                     grep -q 'required' index.html
-                    grep -q 'pattern="[0-9]{10}"' index.html
-                    grep -q 'maxlength="10"' index.html
+                    grep -Fq 'pattern="[0-9]{10}"' index.html
+                    grep -Fq 'maxlength="10"' index.html
                 '''
                 echo 'TC07-TC09 PASSED: Validation attributes verified'
             }
